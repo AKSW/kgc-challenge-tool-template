@@ -41,7 +41,7 @@ for script in "$script_dir"/*/config.sh; do
             TOOLRESOURCE="Rpt" \
             MAPPINGFILE="$mappingfile" \
             envsubst '$NAME$NAME2$TOOLNAME$TOOLRESOURCE$MAPPINGFILE' \
-            < "$script_dir/$parent/${metadata_file%.*}.yml.template" \
+            < "$script_dir/$parent/${metadata_file%.*}.template.yml" \
             | python3 -c 'import sys,yaml,json; json.dump(yaml.safe_load(sys.stdin),sys.stdout,indent=2)' \
             > "$dir/$metadata_file"
         done
