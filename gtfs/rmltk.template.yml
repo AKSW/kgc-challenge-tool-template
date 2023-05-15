@@ -56,7 +56,7 @@ steps:
       WHERE { ?map rr:column ?column }
     - spo.rq
     output: mapping.rml.fixed.ttl
-- '@id': http://example.com/cases/${TOOLNAME}/Virtuoso/${NAME}#step02
+- '@id': http://example.com/cases/${TOOLNAME}/Virtuoso/${NAME}#step01
   name: Run XML data mapping
   resource: ${TOOLRESOURCE}
   command: execute_capture
