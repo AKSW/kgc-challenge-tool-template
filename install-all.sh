@@ -16,6 +16,9 @@ cd "downloads/eswc-kgc-challenge-2023/"
 challenge_root="$(pwd)"
 
 for script in "$script_dir"/*/config.sh; do
+    target_root_folders=()
+    get_mappingfile() { echo "please define get_mappingfile() in ${script}" >&2; exit 1; }
+
     parent="$(basename "$(dirname "$script")")"
     echo "::: $parent"
     . "$script"
