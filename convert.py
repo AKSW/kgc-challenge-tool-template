@@ -14,21 +14,27 @@ if 'steps' in doc:
 
         condition = step['if']
         if condition in results:
-            result = results[condition]
+            pass
         elif not condition:
-            result = results[condition] = False
+            results[condition] = False
         else:
             import subprocess
-            result = subprocess.run(['bash', '-c', f'[[ {condition} ]]']).returncode == 0
-            results[condition] = result
+            results[condition] = subprocess.run(['bash', '-c', f'[[ {condition} ]]']).returncode == 0
 
     if results:
-        for step in doc['steps']:
-            if 'if' not in step:
+        i = 0
+        length = len(doc['steps'])
+        while i < length:
+            if 'if' not in doc['steps'][i]:
+                i += 1
                 continue
 
-            condition = step.pop('if')
+            condition = doc['steps'][i].pop('if')
             if not results[condition]:
-                doc['steps'].remove(step)
+                del doc['steps'][i]
+                length = length - 1
+                continue
+
+            i += 1
 
 json.dump(doc, sys.stdout, indent=2)
