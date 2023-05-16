@@ -5,8 +5,14 @@
 set -eu
 set -o pipefail
 
-toolname="rmltk"
+if [[ $# -lt 1 ]]; then
+    echo "Syntax: $0 <toolname>" >&2
+    exit 1
+fi
+
+toolname="$1"
 metadata_file="${toolname}.json"
+template_file="${toolname}.template.yml"
 
 script_dir="$(dirname "$(readlink -f "$0")")"
 
@@ -20,6 +26,10 @@ for script in "$script_dir"/*/config.sh; do
     get_mappingfile() { echo "please define get_mappingfile() in ${script}" >&2; exit 1; }
 
     parent="$(basename "$(dirname "$script")")"
+    if [[ ! -f "$script_dir/$parent/$template_file" ]]; then
+	continue
+    fi
+
     echo "::: $parent"
     . "$script"
 
@@ -44,7 +54,7 @@ for script in "$script_dir"/*/config.sh; do
             TOOLRESOURCE="Rpt" \
             MAPPINGFILE="$mappingfile" \
             envsubst '$NAME$NAME2$TOOLNAME$TOOLRESOURCE$MAPPINGFILE' \
-            < "$script_dir/$parent/${metadata_file%.*}.template.yml" \
+            < "$script_dir/$parent/$template_file" \
             | "$script_dir/convert.py" \
             > "$dir/$metadata_file"
         done

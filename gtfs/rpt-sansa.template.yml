@@ -57,34 +57,47 @@ steps:
     - spo.rq
     output: mapping.rml.fixed.ttl
 - '@id': http://example.com/cases/${TOOLNAME}/Virtuoso/${NAME}#step01
+  if: ${TOOLNAME} = rpt-sansa
   name: Run XML data mapping
   resource: ${TOOLRESOURCE}
   command: execute_capture
   parameters:
-    command: ${TOOLNAME} xmltojson
+    command: rmltk xmltojson
     arguments:
     - mapping.rml.fixed.ttl
     output: mapping.rml.noxml.ttl
 - '@id': http://example.com/cases/${TOOLNAME}/Virtuoso/${NAME}#step02
+  if: ${TOOLNAME} = rpt-sansa
   name: Transform mapping into Sparql Query
   resource: ${TOOLRESOURCE}
   command: execute_capture
   parameters:
-    command: ${TOOLNAME} rml to sparql
+    command: rmltk rml to sparql
     arguments:
     - mapping.rml.noxml.ttl
+    output: mapping.rml.rq
+- '@id': http://example.com/cases/${TOOLNAME}/Virtuoso/${NAME}#step02
+  if: ${TOOLNAME} = rpt-arq
+  name: Transform mapping into Sparql Query
+  resource: ${TOOLRESOURCE}
+  command: execute_capture
+  parameters:
+    command: rmltk rml to sparql
+    arguments:
+    - mapping.rml.fixed.ttl
     output: mapping.rml.rq
 - '@id': http://example.com/cases/${TOOLNAME}/Virtuoso/${NAME}#step03
   name: Optimise Sparql Query
   resource: ${TOOLRESOURCE}
   command: execute_capture
   parameters:
-    command: ${TOOLNAME} optimize workload
+    command: rmltk optimize workload
     arguments:
     - mapping.rml.rq
     - --no-order
     output: mapping.rml.optimised.rq
 - '@id': http://example.com/cases/${TOOLNAME}/Virtuoso/${NAME}#step04
+  if: ${TOOLNAME} = rpt-sansa
   name: Transform data into RDF
   resource: ${TOOLRESOURCE}
   command: execute
@@ -94,6 +107,16 @@ steps:
     - mapping.rml.optimised.rq
     - --out-file=out.nt
     - --out-overwrite
+- '@id': http://example.com/cases/${TOOLNAME}/Virtuoso/${NAME}#step04
+  if: ${TOOLNAME} = rpt-arq
+  name: Transform data into RDF
+  resource: ${TOOLRESOURCE}
+  command: execute
+  parameters:
+    command: integrate
+    arguments:
+    - mapping.rml.optimised.rq
+    - --out-file=out.nt
 # - '@id': http://example.com/cases/${TOOLNAME}/Virtuoso/${NAME}#step3
 #   name: Load RDF
 #   resource: Virtuoso

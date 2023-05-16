@@ -41,7 +41,7 @@ steps:
   resource: ${TOOLRESOURCE}
   command: execute
   parameters:
-    command: -X integrate
+    command: integrate
     arguments:
     - mapping.csvrml.ttl
     - |
@@ -68,7 +68,7 @@ steps:
   resource: ${TOOLRESOURCE}
   command: execute_capture
   parameters:
-    command: ${TOOLNAME} rml to sparql
+    command: rmltk rml to sparql
     arguments:
     - mapping.csvrml.ttl
     output: mapping.csvrml.rq
@@ -77,12 +77,13 @@ steps:
   resource: ${TOOLRESOURCE}
   command: execute_capture
   parameters:
-    command: ${TOOLNAME} optimize workload
+    command: rmltk optimize workload
     arguments:
     - mapping.csvrml.rq
     - --no-order
     output: mapping.csvrml.optimised.rq
 - '@id': http://example.com/cases/${TOOLNAME}/${NAME}#step4
+  if: ${TOOLNAME} = rpt-sansa
   name: Transform data into RDF
   resource: ${TOOLRESOURCE}
   command: execute
@@ -92,4 +93,13 @@ steps:
     - mapping.csvrml.optimised.rq
     - --out-file=out.nt
     - --out-overwrite
-
+- '@id': http://example.com/cases/${TOOLNAME}/${NAME}#step4
+  if: ${TOOLNAME} = rpt-arq
+  name: Transform data into RDF
+  resource: ${TOOLRESOURCE}
+  command: execute
+  parameters:
+    command: integrate
+    arguments:
+    - mapping.csvrml.optimised.rq
+    - --out-file=out.nt
