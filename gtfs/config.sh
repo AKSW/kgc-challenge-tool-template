@@ -1,6 +1,6 @@
 # bash config
 
-target_root_folders=("gtfs-madrid-bench")
+target_root_folders=("track2/gtfs-madrid-bench")
 
 get_mappingfile() {
     local name="$1"

@@ -18,7 +18,7 @@ script_dir="$(dirname "$(readlink -f "$0")")"
 
 # assume this script is placed in challenge-tool/templates
 cd "$script_dir/../"
-cd "downloads/eswc-kgc-challenge-2023/"
+cd "downloads/eswc-kgc-challenge-2024/"
 challenge_root="$(pwd)"
 
 for script in "$script_dir"/*/config.sh; do

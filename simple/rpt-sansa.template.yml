@@ -66,22 +66,17 @@ steps:
 - '@id': http://example.com/cases/${TOOLNAME}/${NAME}#step2
   name: Transform mapping into Sparql Query
   resource: ${TOOLRESOURCE}
-  command: execute_capture
+  command: execute
   parameters:
     command: rmltk rml to sparql
-    arguments:
-    - mapping.csvrml.ttl
-    output: mapping.csvrml.rq
+    arguments: [ mapping.csvrml.ttl, --out-file=mapping.csvrml.rq, --out-overwrite ]
 - '@id': http://example.com/cases/${TOOLNAME}/${NAME}#step3
   name: Optimise Sparql Query
   resource: ${TOOLRESOURCE}
-  command: execute_capture
+  command: execute
   parameters:
     command: rmltk optimize workload
-    arguments:
-    - mapping.csvrml.rq
-    - --no-order
-    output: mapping.csvrml.optimised.rq
+    arguments: [ mapping.csvrml.rq, --no-order, --out-file=mapping.csvrml.optimised.rq, --out-overwrite ]
 - '@id': http://example.com/cases/${TOOLNAME}/${NAME}#step4
   if: ${TOOLNAME} = rpt-sansa
   name: Transform data into RDF
