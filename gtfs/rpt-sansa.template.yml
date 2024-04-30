@@ -1,6 +1,9 @@
 '@id': http://example.com/cases/${TOOLNAME}/Virtuoso/${NAME}
 name: '${TOOLNAME}: Virtuoso: ${NAME2}'
 description: Transform into N-Triples with ${TOOLNAME} and Virtuoso
+global_environment:
+  JDK_JAVA_OPTIONS:
+  - -Xmx12G
 steps:
 - '@id': http://example.com/cases/${TOOLNAME}/Virtuoso/${NAME}#step00
   name: Fix invalid RML Mapping
@@ -105,7 +108,9 @@ steps:
   command: execute
   parameters:
     environment:
-      JAVA_TOOL_OPTIONS: -Dspark.hadoop.mapred.output.compress=true -Dspark.hadoop.mapred.output.compression.codec=org.apache.hadoop.io.compress.BZip2Codec
+      JDK_JAVA_OPTIONS:
+      - -Dspark.hadoop.mapred.output.compress=true
+      - -Dspark.hadoop.mapred.output.compression.codec=org.apache.hadoop.io.compress.BZip2Codec
     command: sansa query
     arguments:
     - mapping.rml.optimised.rq

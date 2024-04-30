@@ -1,6 +1,9 @@
 '@id': http://example.com/cases/${TOOLNAME}/${NAME}
 name: '${TOOLNAME}: ${NAME2}'
 description: Transform data into N-Triples with ${TOOLNAME}
+global_environment:
+  JDK_JAVA_OPTIONS:
+  - -Xmx12G
 steps:
 - '@id': http://example.com/cases/${TOOLNAME}/${NAME}#step0
   name: Generate CSV-RML mapping
