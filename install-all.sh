@@ -17,7 +17,7 @@ template_file="${toolname}.template.yml"
 script_dir="$(dirname "$(readlink -f "$0")")"
 
 # assume this script is placed in challenge-tool/templates
-cd "$script_dir/../"
+#cd "$script_dir/../"
 cd "downloads/eswc-kgc-challenge-2024/"
 challenge_root="$(pwd)"
 
