@@ -65,7 +65,7 @@ steps:
   resource: ${TOOLRESOURCE}
   command: execute
   parameters:
-    command: rmltk xmltojson
+    command: rmltk xml to json
     arguments: [ mapping.rml.fixed.ttl, --out-file=mapping.rml.noxml.ttl ]
 - '@id': http://example.com/cases/${TOOLNAME}/Virtuoso/${NAME}#step02
   if: ${TOOLNAME} = rpt-sansa
