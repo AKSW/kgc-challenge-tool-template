@@ -10,53 +10,59 @@ if [[ $# -lt 1 ]]; then
     exit 1
 fi
 
-toolname="$1"
-metadata_file="${toolname}.json"
-template_file="${toolname}.template.yml"
+__toolname="$1"
+__metadata_file="${__toolname}.json"
+__template_file="${__toolname}.template.yml"
 
-script_dir="$(dirname "$(readlink -f "$0")")"
+__script_dir="$(dirname "$(readlink -f "$0")")"
 
 # assume this script is placed in challenge-tool/templates
-#cd "$script_dir/../"
+#cd "$__script_dir/../"
 cd "downloads/eswc-kgc-challenge-2024/"
 challenge_root="$(pwd)"
 
-for script in "$script_dir"/*/config.sh; do
+for __script in "$__script_dir"/*/config.sh; do
     target_root_folders=()
-    get_mappingfile() { echo "please define get_mappingfile() in ${script}" >&2; exit 1; }
+    expect_failure=()
 
-    parent="$(basename "$(dirname "$script")")"
-    if [[ ! -f "$script_dir/$parent/$template_file" ]]; then
-	continue
+    # custom attribute default implementations
+    get_mappingfile() { echo "please define get_mappingfile() in ${__script}" >&2; exit 1; }
+    get_expect_failure() { return; }
+
+    __parent="$(basename "$(dirname "$__script")")"
+    if [[ ! -f "$__script_dir/$__parent/$__template_file" ]]; then
+        continue
     fi
 
-    echo "::: $parent"
-    . "$script"
+    echo "::: $__parent"
+    . "$__script"
 
 
-    for target_root_folder in "${target_root_folders[@]}"; do
-        for dir in $target_root_folder/*; do
-            if [[ ! -d "$dir" ]]; then
+    for __target_root_folder in "${target_root_folders[@]}"; do
+        for __dir in $__target_root_folder/*; do
+            if [[ ! -d "$__dir" ]]; then
                 continue
             fi
 
-            echo "=> $dir"
-            name="$dir"
+            echo "=> $__dir"
+            __name="$__dir"
         
-            name2="${name//_/ }"
-            name2="${name2//\// \/ }"
+            __name2="${__name//_/ }"
+            __name2="${__name2//\// \/ }"
 
-            mappingfile="$(get_mappingfile "$name")"
+            __mappingfile="$(get_mappingfile "$__name")"
+            __expect_failure="$(get_expect_failure "$__name")"
 
-            NAME="$name" \
-            NAME2="$name2" \
-            TOOLNAME="${toolname}" \
+            NAME="$__name" \
+            NAME2="$__name2" \
+            TOOLNAME="${__toolname}" \
             TOOLRESOURCE="Rpt" \
-            MAPPINGFILE="$mappingfile" \
-            envsubst '$NAME$NAME2$TOOLNAME$TOOLRESOURCE$MAPPINGFILE' \
-            < "$script_dir/$parent/$template_file" \
-            | "$script_dir/convert.py" \
-            > "$dir/$metadata_file"
+            MAPPINGFILE="$__mappingfile" \
+            EXPECT_FAILURE="$__expect_failure" \
+            envsubst '$NAME$NAME2$TOOLNAME$TOOLRESOURCE$MAPPINGFILE$EXPECT_FAILURE' \
+            < "$__script_dir/$__parent/$__template_file" \
+            | "$__script_dir/convert.py" \
+            > "$__dir/$__metadata_file"
         done
     done
 done

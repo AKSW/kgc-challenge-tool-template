@@ -1,5 +1,5 @@
 '@id': http://w3id.org/kg-construct/rml-core/test-cases/${NAME}
-name: '${TOOLNAME}: rml-core test-case ${NAME2}'
+name: '${TOOLNAME}: ${NAME2}'
 description: Execute test-case ${NAME2} of rml-core with ${TOOLNAME}
 global_environment:
   JDK_JAVA_OPTIONS:
@@ -23,6 +23,7 @@ steps:
     csv_files: []
 - '@id': http://w3id.org/kg-construct/rml-core/test-cases/${NAME}#${TOOLNAME}.step1
   name: Execute RML mapping
+  expect_failure: $EXPECT_FAILURE
   resource: ${TOOLRESOURCE}
   command: execute
   parameters:
@@ -30,8 +31,10 @@ steps:
     arguments:
     - ${MAPPINGFILE}
     - --out-file=output.nq
+    - --out-overwrite
 - '@id': http://w3id.org/kg-construct/rml-core/test-cases/${NAME}#step2
   name: Validate ${NAME2} output
+  if: ${EXPECT_FAILURE} = false
   resource: Validate
   command: compare_graphs
   parameters:
